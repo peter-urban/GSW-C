@@ -7,14 +7,18 @@
 #define GSW_INTERNAL_CONST_H
 
 /*
-** The following hack is used to ensure that gcc (and gcc emulating compilers
-** such as Macosx clang) do not emit unused variable warning messages.
+** The following hack is used to ensure that gcc, clang or msvc do not emit 
+** unused variable warning messages.
 */
-#ifdef __GNUC__
-#define UNUSED __attribute__ ((unused))
+// Define UNUSED macro for different compilers
+#if defined(__GNUC__) || defined(__clang__)
+    #define UNUSED __attribute__((unused))
+#elif defined(_MSC_VER)
+    #define UNUSED __pragma(warning(suppress:4100))
 #else
-#define UNUSED
+    #define UNUSED
 #endif
+
 
 
 #define GSW_TEOS10_CONSTANTS \
