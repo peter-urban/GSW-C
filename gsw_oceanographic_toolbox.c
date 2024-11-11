@@ -8770,6 +8770,12 @@ gsw_sa_ct_interp(double *sa, double *ct, double *p, int m,
         // Combine pressure values of observed and interpolated SA and CT
         p_all_len = prof_len + m_i;
 
+        // this resolves a compiler warning with gcc-11
+        if (p_all_len == 0){
+            fprintf(stderr, "Error this shouldn't happen\n");
+            exit(EXIT_FAILURE);
+        }
+
         p_all = (double *) malloc(p_all_len*sizeof (double));
         p_all_sort = (double *) malloc(p_all_len*sizeof (double));
         p_all_idx = (int *) malloc(p_all_len*sizeof (int));
@@ -11491,6 +11497,12 @@ gsw_tracer_ct_interp(double *tracer, double *ct, double *p, int m,
 
         // Combine pressure values of observed and interpolated tracer and CT
         p_all_len = prof_len + m_i;
+
+        // this resolves a compiler warning with gcc-11
+        if (p_all_len == 0){
+            fprintf(stderr, "Error this shouldn't happen\n");
+            exit(EXIT_FAILURE);
+        }
 
         p_all = (double *) malloc(p_all_len*sizeof (double));
         p_all_sort = (double *) malloc(p_all_len*sizeof (double));
