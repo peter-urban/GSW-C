@@ -694,7 +694,7 @@ report(const char *funcname, const char *varname, gsw_error_info *errs)
             }
             strcat(message, ")");
         }
-        sprintf(infoflg,"(%s%3d)",(errs->flags & GSW_ERROR_LIMIT_FLAG)?"*":"",
+        snprintf(infoflg, sizeof(infoflg), "(%s%3d)", (errs->flags & GSW_ERROR_LIMIT_FLAG) ? "*" : "",
                 errs->ncomp);
         if (errs->flags & GSW_ERROR_ERROR_FLAG) {
             gsw_error_flag = 1;
