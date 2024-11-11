@@ -142,7 +142,7 @@ void assert_equal(int actual, int expected, const char *test_name) {
 }
 
 
-void test_infunnel() {
+void test_infunnel(void) {
     int result;
     // Inside the funnel.
     result = gsw_infunnel(35.0, 5.0, 400);
