@@ -97,9 +97,44 @@ double          tf_poly[cast_m*cast_n];
 double          h[cast_m*cast_n];
 double          z[cast_m*cast_n];
 
+void add_dots_to_message(char* message, int total_length, int buffer_size)
+{
+    // used to add dots to message. total_length is typically 65
+    // typically the message is a test name
+    // buffer_size is the size of the message buffer
+
+    if (total_length < 0)
+        return;
+
+    int message_length = strlen(message);
+
+    // make sure no buffer overflow happens
+    if (total_length > buffer_size)
+        total_length = buffer_size;
+
+    if (total_length > message_length)
+    {
+        size_t ndots = total_length - message_length;
+
+        char dots[81];
+        if (ndots >= sizeof(dots)) {
+            ndots = sizeof(dots) - 1;
+        }
+
+        memset(dots, '.', ndots);
+        dots[ndots] = '\0';
+        strcat(message, dots);
+
+    }
+}
+
 void assert_equal(int actual, int expected, const char *test_name) {
     if (actual == expected) {
-        printf("%s: ............................... passed\n", test_name);
+        char message[81];
+        strncpy(message, test_name, sizeof(message) - 1);
+        message[sizeof(message) - 1] = '\0';
+        add_dots_to_message(message, 65, sizeof(message));
+        printf("%s passed\n",message);
     } else {
         printf("%s: Failed (Expected: %d, Actual: %d)\n", test_name, expected, actual);
         gsw_error_flag=1;
@@ -643,10 +678,9 @@ void
 report(const char *funcname, const char *varname, gsw_error_info *errs)
 {
         int     msglen = strlen(funcname)+((varname==NULL)?0:strlen(varname)),
-                k, ndots;
+                k;
         char    message[81], infoflg[8];
 
-        const char* dots ="...............................................................";
         strcpy(message, funcname);
         if (strcmp(funcname, varname)) {
             msglen += 5;
@@ -662,11 +696,11 @@ report(const char *funcname, const char *varname, gsw_error_info *errs)
         }
         sprintf(infoflg,"(%s%3d)",(errs->flags & GSW_ERROR_LIMIT_FLAG)?"*":"",
                 errs->ncomp);
-        ndots = 65 - strlen(message);
         if (errs->flags & GSW_ERROR_ERROR_FLAG) {
             gsw_error_flag = 1;
-            if (ndots > 3)
-                strncat(message, dots, ndots-3);
+
+            add_dots_to_message(message, 65 -3, sizeof(message)); // -3 to account for "<< " in failed
+
             printf("%s << failed >>\n",message);
             printf("\n  Max difference = %.17g, limit = %.17g\n",
                 errs->max,errs->limit);
@@ -675,8 +709,7 @@ report(const char *funcname, const char *varname, gsw_error_info *errs)
             printf("  Max at index %d, calcval= %.17g, refval= %.17g\n",
                 errs->index, errs->calcval, errs->refval);
         } else {
-            if (ndots > 0)
-                strncat(message, dots, ndots);
+            add_dots_to_message(message, 65, sizeof(message));
             printf("%s passed %s\n",message,infoflg);
         }
 }
