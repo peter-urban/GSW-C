@@ -50,7 +50,7 @@ jobs:
 
       - name: Compile
         run: |
-          meson setup builddir -Ddefault_library=${{matrix.library}} ${{matrix.force_cpp}}
+          meson setup builddir -Ddefault_library=${{matrix.library}} ${{matrix.force_cpp}} -Dwerror=true
           meson compile -C builddir
 
       - name: Test
